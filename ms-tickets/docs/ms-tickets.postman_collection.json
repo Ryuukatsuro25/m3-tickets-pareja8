@@ -1,0 +1,508 @@
+{
+  "info": {
+    "name": "ms-tickets · Evaluación M3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Ejecutar completa con el Runner. Local: auth=http://localhost:3001, base=http://localhost:3011. Por el gateway: las dos = http://<apellidos>.m3examen.com/api"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "auth",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "base",
+      "value": "http://localhost:3011"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@empresa.com"
+    },
+    {
+      "key": "admin_password",
+      "value": "Admin2026*"
+    },
+    {
+      "key": "rol_consulta",
+      "value": "comercial"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "token_consulta",
+      "value": ""
+    },
+    {
+      "key": "nuevo_id",
+      "value": ""
+    },
+    {
+      "key": "numero_nuevo",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "0 · Iniciar sesión",
+      "item": [
+        {
+          "name": "Login administrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{auth}}/usuarios/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Crear usuario de consulta (201 o 409 si ya existe)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 o 409', () => pm.expect(pm.response.code).to.be.oneOf([201, 409]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{auth}}/usuarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario Consulta\",\n  \"email\": \"consulta@empresa.com\",\n  \"password\": \"Consulta2026*\",\n  \"rol\": \"{{rol_consulta}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login usuario de consulta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token_consulta', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{auth}}/usuarios/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"consulta@empresa.com\",\n  \"password\": \"Consulta2026*\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 · CRUD",
+      "item": [
+        {
+          "name": "Listar tickets",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es un arreglo', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets"
+          }
+        },
+        {
+          "name": "Obtener ticket 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Trae el id 1', () => pm.expect(pm.response.json().id).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets/1"
+          }
+        },
+        {
+          "name": "Crear ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Trae Location', () => pm.response.to.have.header('Location'));",
+                  "pm.collectionVariables.set('nuevo_id', pm.response.json().id);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('numero_nuevo', 'TK-' + Date.now());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/tickets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"{{numero_nuevo}}\",\n  \"asunto\": \"La VPN no conecta\",\n  \"prioridad\": \"media\",\n  \"estado\": \"abierto\",\n  \"fecha\": \"2026-11-18\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Quedó cerrado', () => pm.expect(pm.response.json().estado).to.eql('cerrado'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/tickets/{{nuevo_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"{{numero_nuevo}}\",\n  \"asunto\": \"La VPN no conecta\",\n  \"prioridad\": \"alta\",\n  \"estado\": \"cerrado\",\n  \"fecha\": \"2026-11-18\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base}}/tickets/{{nuevo_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 · Errores",
+      "item": [
+        {
+          "name": "400 · datos inválidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/tickets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"TK-X\",\n  \"asunto\": \"\",\n  \"prioridad\": \"urgente\",\n  \"estado\": \"pendiente\",\n  \"fecha\": \"2026-02-30\"\n}"
+            }
+          }
+        },
+        {
+          "name": "400 · id no numérico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets/abc"
+          }
+        },
+        {
+          "name": "404 · ticket inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets/999999"
+          }
+        },
+        {
+          "name": "409 · numero repetido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/tickets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"TCK-001\",\n  \"asunto\": \"La VPN no conecta\",\n  \"prioridad\": \"media\",\n  \"estado\": \"abierto\",\n  \"fecha\": \"2026-11-18\"\n}"
+            }
+          }
+        },
+        {
+          "name": "401 · sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "403 · rol sin permiso crea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('numero_nuevo', 'TK-' + Date.now());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/tickets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"{{numero_nuevo}}\",\n  \"asunto\": \"La VPN no conecta\",\n  \"prioridad\": \"media\",\n  \"estado\": \"abierto\",\n  \"fecha\": \"2026-11-18\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_consulta}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 · Filtro",
+      "item": [
+        {
+          "name": "Filtrar por prioridad alta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Todos son de prioridad alta', () => pm.response.json().forEach((t) => pm.expect(t.prioridad).to.eql('alta')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets?prioridad=alta"
+          }
+        },
+        {
+          "name": "Consulta con rol de consulta (GET para cualquier rol)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/tickets",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token_consulta}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
