@@ -27,4 +27,4 @@ async function pedir(ruta, token) {
 //   if (respuesta.status === 404) ...     → no existe
 //   const datos = await respuesta.json(); → el objeto (o el arreglo, con ?ids=)
 
-module.exports = { pedir, obtenerEquipo };
+module.exports = { pedir, obtenerEquipo, buscarEquipo, buscarEquipos };

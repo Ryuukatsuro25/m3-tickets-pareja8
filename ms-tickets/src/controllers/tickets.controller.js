@@ -21,13 +21,13 @@ async function listar(req, res) {
       throw new HttpError(400, 'ids debe ser una lista de enteros separados por comas');
     }
   }
-  const tickets = await service.listar(filtros);
+  const tickets = await service.listar(filtros, req.headers.authorization);
   res.status(200).json(tickets);
 }
 
 // GET /tickets/:id
 async function obtener(req, res) {
-  const ticket = await service.obtener(leerId(req));
+  const ticket = await service.obtener(leerId(req), req.headers.authorization);
   res.status(200).json(ticket);
 }
 
