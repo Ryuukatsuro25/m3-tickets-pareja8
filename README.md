@@ -5,7 +5,7 @@ Redes y Servicios Multimedia · Universidad Autónoma de Occidente · Docente: Z
 |Integrante|Usuario de GitHub|
 |-|-|
 |Juan José Osorio Reyes|[Ryuukatsuro25](https://github.com/Ryuukatsuro25)|
-|Hernán David Gutiérrez Alarcón|epsilon598 (https://github.com/epsilon598)|
+|Hernán David Gutiérrez Alarcón|epsilon5981 (https://github.com/epsilon5981)|
 
 ## Microservicio asignado
 
@@ -26,7 +26,7 @@ El contrato completo está en [ms-tickets/README.md](ms-tickets/README.md) y la 
     ├── package.json · package-lock.json
     ├── .env.example         ← el .env NO se sube
     ├── db/schema.sql        ← tabla tickets + 4 registros iniciales
-    ├── docs/ms-tickets.postman\_collection.json
+    ├── docs/ms-tickets.postman\\\_collection.json
     └── src/
         ├── index.js · app.js · db.js
         ├── routes/          ← método + URI → controlador, permisos por rol
@@ -38,5 +38,5 @@ El contrato completo está en [ms-tickets/README.md](ms-tickets/README.md) y la 
         └── utils/           ← HttpError
 ```
 
-Nunca se suben `node\_modules` ni `.env`.
+Nunca se suben `node\\\_modules` ni `.env`.
 
