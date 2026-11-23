@@ -39,6 +39,9 @@ function validarTicket(datos) {
   if (!esFechaValida(datos.fecha)) {
     errores.push('fecha es obligatoria y debe ser una fecha válida con formato AAAA-MM-DD');
   }
+  if (!Number.isInteger(datos.equipo_id) || datos.equipo_id <= 0){
+    errores.push('equipo_id es obligatorio y debe ser un entero positivo');
+  }
   return errores;
 }
 
@@ -50,6 +53,7 @@ function construirTicket(datos) {
     prioridad: datos.prioridad,
     estado: datos.estado,
     fecha: datos.fecha,
+    equipo_id: datos.equipo_id,
   };
 }
 

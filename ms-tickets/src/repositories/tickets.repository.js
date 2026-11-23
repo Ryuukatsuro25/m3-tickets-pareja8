@@ -41,8 +41,8 @@ async function create(ticket) {
 
 async function update(id, ticket) {
   const [resultado] = await pool.query(
-    'UPDATE tickets SET numero = ?, asunto = ?, prioridad = ?, estado = ?, fecha = ? WHERE id = ?',
-    [ticket.numero, ticket.asunto, ticket.prioridad, ticket.estado, ticket.fecha, id]);
+    'UPDATE tickets SET numero = ?, asunto = ?, prioridad = ?, estado = ?, fecha = ?, equipo_id = ? WHERE id = ?',
+    [ticket.numero, ticket.asunto, ticket.prioridad, ticket.estado, ticket.fecha, ticket.equipo_id, id]);
   return resultado.affectedRows > 0 ? findById(id) : null;
 }
 
