@@ -59,6 +59,7 @@ Así responde `GET /tickets/1`:
 | prioridad | texto | Sí | `baja`, `media` o `alta` |
 | estado | texto | Sí | `abierto` o `cerrado` |
 | fecha | fecha | Sí | Formato `AAAA-MM-DD` y fecha real |
+| equipo_id | entero | Sí | Entero positivo; debe existir en ms-equipos (400) y no estar 'de_baja' (409); si ms-equipos no responde: 503 |
 
 **Regla de negocio:** no puede haber dos tickets con el mismo `numero` → **409 Conflict** (al crear y al actualizar; un ticket puede conservar su propio número al actualizarse).
 

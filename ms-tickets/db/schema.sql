@@ -20,7 +20,7 @@ CREATE TABLE tickets (
 );
 
 INSERT INTO tickets (numero, asunto, prioridad, estado, fecha, equipo_id) VALUES
-  ('TCK-001', 'La impresora del segundo piso no imprime',   'media', 'abierto', '2026-11-10'),
-  ('TCK-002', 'No se puede iniciar sesión en el portal',    'alta',  'abierto', '2026-11-15'),
-  ('TCK-003', 'Solicitud de cambio de mouse',               'baja',  'cerrado', '2026-11-05'),
-  ('TCK-004', 'Caída del correo institucional',             'alta',  'cerrado', '2026-11-18');
+  ('TCK-001', 'La impresora del segundo piso no imprime',   'media', 'abierto', '2026-11-10', 2),
+  ('TCK-002', 'No se puede iniciar sesión en el portal',    'alta',  'abierto', '2026-11-15', 1),
+  ('TCK-003', 'Solicitud de cambio de mouse',               'baja',  'cerrado', '2026-11-05', 4),
+  ('TCK-004', 'Caída del correo institucional',             'alta',  'cerrado', '2026-11-18', 1);
