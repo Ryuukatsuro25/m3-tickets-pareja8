@@ -34,9 +34,9 @@ async function findByNumero(numero) {
 
 async function create(ticket) {
   const [resultado] = await pool.query(
-    'INSERT INTO tickets (numero, asunto, prioridad, estado, fecha) VALUES (?, ?, ?, ?, ?)',
-    [ticket.numero, ticket.asunto, ticket.prioridad, ticket.estado, ticket.fecha]);
-  return findById(resultado.insertId);     // MySQL devuelve el id generado
+    'INSERT INTO tickets (numero, asunto, prioridad, estado, fecha, equipo_id) VALUES (?, ?, ?, ?, ?, ?)',
+    [ticket.numero, ticket.asunto, ticket.prioridad, ticket.estado, ticket.fecha, ticket.equipo_id]);
+  return findById(resultado.insertId);
 }
 
 async function update(id, ticket) {

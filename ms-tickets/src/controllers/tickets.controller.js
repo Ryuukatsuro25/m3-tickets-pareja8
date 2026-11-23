@@ -27,7 +27,7 @@ async function listar(req, res) {
 
 // GET /tickets/:id
 async function obtener(req, res) {
-  const ticket = await service.obtener(leerId(req), req.headers.authorization);
+  const ticket = await service.obtenerCompuesto(leerId(req), req.headers.authorization);
   res.status(200).json(ticket);
 }
 
