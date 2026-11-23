@@ -33,13 +33,13 @@ async function obtener(req, res) {
 
 // POST /tickets
 async function crear(req, res) {
-  const nuevo = await service.crear(req.body);
+  const nuevo = await service.crear(req.body, req.headers.authorization);
   res.status(201).location(`${req.baseUrl}/${nuevo.id}`).json(nuevo);
 }
 
 // PUT /tickets/:id
 async function actualizar(req, res) {
-  const ticket = await service.actualizar(leerId(req), req.body);
+  const ticket = await service.actualizar(leerId(req), req.body, req.headers.authorization);
   res.status(200).json(ticket);
 }
 
