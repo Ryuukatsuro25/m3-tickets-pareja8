@@ -35,6 +35,9 @@ async function verificarNumeroUnico(numero, idActual = null) {
 // Validación de la relación con ms-equipos (400 no existe · 503 no responde)
 async function verificarEquipo(equipoId, token) {
   const equipo = await equiposClient.obtenerEquipo(equipoId, token);
+  if(equipo.estado_equipo === 'de_baja'){
+    throw new HttpError(409, 'El equipo ${equipoId} está de baja: no se le puede abir tickets');
+  }
   return equipo;
 }
 
